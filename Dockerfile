@@ -134,5 +134,6 @@ VOLUME /home/magento2
 WORKDIR /var/www/magento2
 
 USER root
-
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+USER magento2
