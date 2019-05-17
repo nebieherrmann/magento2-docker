@@ -1,13 +1,8 @@
-FROM php:7.1-fpm
+FROM php:7.0.16-fpm
 
 MAINTAINER "Magento"
 
 ENV PHP_EXTRA_CONFIGURE_ARGS="--enable-fpm --with-fpm-user=magento2 --with-fpm-group=magento2"
-
-RUN apt-get update
-RUN apt-get install -y gnupg
-
-RUN curl --silent --location https://deb.nodesource.com/setup_10.x | bash -
 
 RUN apt-get update && apt-get install -y \
     apt-utils \
@@ -21,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev libxslt1-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
+    libpng12-dev \
     git \
     vim \
     openssh-server \
@@ -48,6 +44,7 @@ RUN apt-get update && apt-get install -y \
     && chmod 666 /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && mkdir /var/run/sshd \
     && apt-get clean && apt-get update && apt-get install -y nodejs \
+    && ln -s /usr/bin/nodejs /usr/bin/node \
     && apt-get install -y npm \
     && npm update -g npm && npm install -g grunt-cli && npm install -g gulp \
     && echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config \
@@ -127,13 +124,10 @@ RUN chown -R magento2:magento2 /home/magento2 && \
 
 # Delete user password to connect with ssh with empty password
 RUN passwd magento2 -d
-RUN passwd root -d
 
-EXPOSE 80 22 5000 6081 6379 44100
-VOLUME /home/magento2
-WORKDIR /var/www/magento2
+EXPOSE 80 22 5000 44100
+WORKDIR /home/magento2
 
 USER root
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-USER magento2
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
