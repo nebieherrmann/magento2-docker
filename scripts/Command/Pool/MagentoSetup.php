@@ -49,16 +49,22 @@ class MagentoSetup extends AbstractCommand
         $magentoAdminUser = $this->requestOption(MagentoOptions::ADMIN_USER, $input, $output);
         $magentoAdminPassword = $this->requestOption(MagentoOptions::ADMIN_PASSWORD, $input, $output);
 
+        if ($webserverHomePort=="80") {
+        	$host = "http://".$magentoHost."/";
+        }else{
+        	$host = "http://".$magentoHost.":".$webserverHomePort."/";
+        }
+
+
         $command = sprintf(
             'cd %s && php bin/magento setup:install'
-                . ' --cleanup-database --base-url=http://%s:%s/ --db-host=%s --db-name=%s'
+                . ' --cleanup-database --base-url=%s --db-host=%s --db-name=%s'
                 . ' --db-user=%s --db-password=%s --admin-firstname=Magento --admin-lastname=User'
                 . ' --admin-email=user@example.com --admin-user=%s --admin-password=%s'
                 . ' --language=en_US --currency=USD --timezone=America/Chicago --use-rewrites=1'
                 . ' --backend-frontname=%s',
             $magentoPath,
-            $magentoHost,
-            $webserverHomePort,
+            $host,
             $input->getOption(DbOptions::HOST),
             $input->getOption(DbOptions::NAME),
             $input->getOption(DbOptions::USER),
