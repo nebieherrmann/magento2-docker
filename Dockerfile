@@ -127,13 +127,10 @@ RUN chown -R magento2:magento2 /home/magento2 && \
 
 # Delete user password to connect with ssh with empty password
 RUN passwd magento2 -d
-RUN passwd root -d
 
-EXPOSE 80 22 5000 6081 6379 44100
-VOLUME /home/magento2
-WORKDIR /var/www/magento2
+EXPOSE 80 22 5000 44100
+WORKDIR /home/magento2
 
 USER root
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-USER magento2
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
